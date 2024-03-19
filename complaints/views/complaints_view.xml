@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+
+<odoo>
+    <!-- Complaint Action -->
+    <record id="action_complaint" model="ir.actions.act_window">
+        <field name="name">Complaints</field>
+        <field name="res_model">complaint.complaint</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first complaint
+            </p>
+        </field>
+    </record>
+
+    <!-- Complaint Form View -->
+    <record id="view_complaint_form" model="ir.ui.view">
+        <field name="name">complaint.form</field>
+        <field name="model">complaint.complaint</field>
+        <field name="arch" type="xml">
+            <form string="Complaint">
+                <sheet>
+                    <group>
+                        <field name="title"/>
+                        <field name="customer_id"/>
+                        <field name="user_id"/>
+                        <field name="creation_date" readonly="1"/>
+                        <field name="modification_date" readonly="1"/>
+                        <field name="closing_date"/>
+                        <field name="sale_order_id"/>
+                        <field name="initial_description"/>
+                        <field name="state" widget="statusbar" statusbar_visible="new,in_progress,closed,cancelled"/>
+                    </group>
+                    <notebook>
+                        <page string="Messages">
+                            <field name="messages_ids" nolabel="1">
+                                <tree editable="bottom">
+                                    <field name="author_id"/>
+                                    <field name="text"/>
+                                    <field name="message_date"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Resolution">
+                            <group>
+                                <field name="resolution_description"/>
+                                <field name="closing_reason_id"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Complaint Tree View -->
+    <record id="view_complaint_tree" model="ir.ui.view">
+        <field name="name">complaint.tree</field>
+        <field name="model">complaint.complaint</field>
+        <field name="arch" type="xml">
+            <tree string="Complaints">
+                <field name="title"/>
+                <field name="customer_id"/>
+                <field name="user_id"/>
+                <field name="creation_date"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+
+
+</odoo>

@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+
+<odoo>
+    <menuitem id="complaint_management_menu_root" name="Complaint Management" sequence="10"/>
+    <menuitem id="complaint_management_main_menu" name="Complaints" parent="complaint_management_menu_root" sequence="1"/>
+    <menuitem id="complaint_management_complaint_menu" name="Manage Complaints" parent="complaint_management_main_menu" action="action_complaint" sequence="10"/>
+</odoo>

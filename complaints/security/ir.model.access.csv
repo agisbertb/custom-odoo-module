@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_complaints_complaint,access_estate_property,model_complaint_complaint,base.group_user,1,1,1,1
+access_complaints_complaint_message,access_estate_property_tag,model_complaint_message,base.group_user,1,1,1,1
+access_complaints_complaint_closing_reason,access_estate_property_type,model_complaint_closing_reason,base.group_user,1,1,1,1
