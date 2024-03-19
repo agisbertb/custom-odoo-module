@@ -4,7 +4,7 @@
     "author": "Andreu Gisbert Bel & Ismael Semmar Gàlvez", # author
     "summary": "Customer complaints",  # A short description of the module
     "application": True,  # This line says the module is an App, and not a module
-    "depends": ["base"],  # dependencies
+    "depends": ["base", "sale"],  # The modules that this module depends on sale
     "data": [
         "security/ir.model.access.csv",
         "views/complaints_view.xml",

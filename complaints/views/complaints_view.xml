@@ -27,8 +27,8 @@
                         <field name="creation_date" readonly="1"/>
                         <field name="modification_date" readonly="1"/>
                         <field name="closing_date"/>
-                        <field name="sale_order_id"/>
                         <field name="initial_description"/>
+                        <field name="sale_order_id"/>
                         <field name="state" widget="statusbar" statusbar_visible="new,in_progress,closed,cancelled"/>
                     </group>
                     <notebook>
@@ -67,7 +67,6 @@
             </tree>
         </field>
     </record>
-
 
 
 </odoo>
