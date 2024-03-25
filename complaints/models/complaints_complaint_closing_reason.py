@@ -5,4 +5,3 @@ class ComplaintClosingReason(models.Model):
     _description = 'Complaint Closing Reason'
 
     name = fields.Char(string='Name', required=True)
-    description = fields.Text(string='Description')

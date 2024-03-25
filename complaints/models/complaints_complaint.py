@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 
+
 class Complaint(models.Model):
     _name = 'complaint.complaint'
     _description = 'Complaint Management'
@@ -24,13 +25,35 @@ class Complaint(models.Model):
     resolution_description = fields.Text(string='Resolution Description')
     closing_reason_id = fields.Many2one('complaint.closing_reason', string='Closing Reason')
 
-
-    @api.depends('sale_order_id.invoice_ids')
+    @api.depends('sale_order_id')
     def _compute_invoice_count(self):
-        for complaint in self:
-            complaint.invoice_count = len(complaint.sale_order_id.invoice_ids)
+        for record in self:
+            if record.sale_order_id:
+                invoices = self.env['account.move'].search([
+                    ('invoice_origin', '=', record.sale_order_id.name),
+                    ('move_type', '=', 'out_invoice'),
+                    ('state', '!=', 'cancel')
+                ])
+                record.invoice_count = len(invoices)
+            else:
+                record.invoice_count = 0
 
-    @api.depends('sale_order_id.picking_ids')
+    @api.depends('sale_order_id')
     def _compute_shipment_count(self):
         for complaint in self:
-            complaint.shipment_count = len(complaint.sale_order_id.picking_ids)
+            if complaint.sale_order_id:
+                pickings = self.env['stock.picking'].search([('sale_id', '=', complaint.sale_order_id.id)])
+                complaint.shipment_count = len(pickings)
+            else:
+                complaint.shipment_count = 0
+
+    def set_to_closed(self):
+        for record in self:
+            if record.state in ['new', 'in_progress']:
+                record.state = 'closed'
+                record.closing_date = fields.Datetime.now()
+
+    def set_to_cancelled(self):
+        for record in self:
+            if record.state in ['new', 'in_progress']:
+                record.state = 'cancelled'
