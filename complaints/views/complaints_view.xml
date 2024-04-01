@@ -20,12 +20,12 @@
         <field name="arch" type="xml">
             <form string="Complaint">
                 <header>
+                    <field name="state" widget="statusbar" statusbar_visible="new,in_progress,closed,cancelled"/>
                     <button name="set_to_closed" type="object" string="Close"
                         attrs="{'invisible': [('state', '!=', 'new'),('state','!=','in_progress')]}" />
                     <button name="set_to_cancelled" type="object" string="Cancel"
                         attrs="{'invisible': [('state', '=', 'closed')]}" />
                 </header>
-
                 <sheet>
                     <group>
                         <field name="title" />
@@ -38,8 +38,6 @@
                         <field name="sale_order_id" />
                         <field name="invoice_count" readonly="1" />
                         <field name="shipment_count" readonly="1" />
-                        <field name="state" widget="statusbar"
-                            statusbar_visible="new,in_progress,closed,cancelled" />
                     </group>
                     <notebook>
                         <page string="Messages">
