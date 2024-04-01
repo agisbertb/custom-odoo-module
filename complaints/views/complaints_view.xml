@@ -29,17 +29,13 @@
                         attrs="{'invisible': [('state', '!=', 'closed')]}"/>
                     <button name="cancel_associated_sale_order"
                             string="Cancel Associated Sale Order"
-                            confirm="This order has posted invoices, are u sure you want to delete?"
+                            confirm="This order has posted invoices, are you sure you want to delete?"
                             type="object"
-                            attrs="{'invisible': [('has_posted_invoices', '=', 0)]}"
-                            context="{'confirm_message': 'Test A'}"/>
-
+                            attrs="{'invisible': ['|', ('has_posted_invoices', '=', 0), ('has_posted_invoices', '=', False)]}"/>
                     <button name="cancel_associated_sale_order"
                             string="Cancel Associated Sale Order"
-                            confirm="Test B"
                             type="object"
-                            attrs="{'invisible': [('has_posted_invoices', '>', 0)]}"
-                            context="{'confirm_message': 'Test B'}"/>
+                            attrs="{'invisible': ['|', ('has_posted_invoices', '>', 0), ('has_linked_sale_order', '=', False)]}"/>
                 </header>
                 <sheet>
                     <group>
@@ -54,6 +50,7 @@
                         <field name="invoice_count" readonly="1" />
                         <field name="shipment_count" readonly="1" />
                         <field name="has_posted_invoices" readonly="1"/>
+                        <field name="has_linked_sale_order" readonly="1"/>
                     </group>
                     <notebook>
                         <page string="Messages">
@@ -152,17 +149,13 @@
                                     attrs="{'invisible': [('state', '!=', 'closed')]}"/>
                                 <button name="cancel_associated_sale_order"
                                         string="Cancel Associated Sale Order"
-                                        confirm="This order has posted invoices, are u sure you want to delete?"
+                                        confirm="This order has posted invoices, are you sure you want to delete?"
                                         type="object"
-                                        attrs="{'invisible': [('has_posted_invoices', '=', 0)]}"
-                                        context="{'confirm_message': 'Test A'}"/>
-            
+                                        attrs="{'invisible': ['|', ('has_posted_invoices', '=', 0), ('has_posted_invoices', '=', False)]}"/>
                                 <button name="cancel_associated_sale_order"
                                         string="Cancel Associated Sale Order"
-                                        confirm="Test B"
                                         type="object"
-                                        attrs="{'invisible': [('has_posted_invoices', '>', 0)]}"
-                                        context="{'confirm_message': 'Test B'}"/>
+                                        attrs="{'invisible': ['|', ('has_posted_invoices', '>', 0), ('has_linked_sale_order', '=', False)]}"/>
                             </header>
                             <sheet>
                                 <group>
@@ -177,6 +170,7 @@
                                     <field name="invoice_count" readonly="1" />
                                     <field name="shipment_count" readonly="1" />
                                     <field name="has_posted_invoices" readonly="1"/>
+                                    <field name="has_linked_sale_order" readonly="1"/>
                                 </group>
                                 <notebook>
                                     <page string="Messages">

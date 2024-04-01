@@ -23,6 +23,7 @@ class Complaint(models.Model):
         ('cancelled', 'Cancelled')
     ], string='State', default='new')
     has_posted_invoices = fields.Boolean(compute='_compute_has_posted_invoices', string='Has Posted Invoices')
+    has_linked_sale_order = fields.Boolean(compute='_compute_has_linked_sale_order', string='Has Linked Sale Order')
     sale_order_id = fields.Many2one('sale.order', string='Associated Sale Order')
     resolution_description = fields.Text(string='Resolution Description')
     closing_reason_id = fields.Many2one('complaint.closing_reason', string='Closing Reason')
@@ -62,9 +63,17 @@ class Complaint(models.Model):
         for record in self:
             if record.sale_order_id:
                 invoices = record.sale_order_id.invoice_ids.filtered(lambda inv: inv.state == 'posted')
-                record.has_posted_invoices = 0
+                if invoices:
+                    record.has_posted_invoices = len(invoices)
+                else:
+                    record.has_posted_invoices = 0
             else:
-                record.has_posted_invoices = 0
+                record.has_posted_invoices = False
+    
+    @api.depends('sale_order_id')
+    def _compute_has_linked_sale_order(self):
+        for record in self:
+            record.has_linked_sale_order = bool(record.sale_order_id)
 
     def close_ticket(self):
         for record in self:
@@ -109,14 +118,24 @@ class Complaint(models.Model):
 
                     # Cancel·lar factures associades no publicades
                     for invoice in sale_order.invoice_ids.filtered(lambda inv: inv.state != 'posted'):
-                        invoice.action_cancel()
+                        invoice.state = 'cancel'
 
                     # Cancel·lar enviaments no fets
                     for picking in sale_order.picking_ids.filtered(lambda pick: pick.state not in ['done', 'cancel']):
-                        picking.action_cancel()
+                        picking.state = 'cancel'
 
                     # Cancel the status of the assosicated sale order
                     sale_order.state = 'cancel'
+
+                    # Redirect to the sale order
+                    return {
+                        'name': _('Sale Order'),
+                        'view_mode': 'form',
+                        'res_model': 'sale.order',
+                        'type': 'ir.actions.act_window',
+                        'res_id': sale_order.id,
+                        'context': self.env.context,
+                    }
             
     _sql_constraints = [
         ('unique_title', 'UNIQUE(title)', _('A complaint with this title already exists!')),
