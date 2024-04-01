@@ -24,11 +24,22 @@
                     <button name="close_ticket" type="object" string="Close"
                         attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
                     <button name="cancel_ticket" type="object" string="Cancel"
-                        attrs="{'invisible': [('state', '=', 'closed')]}"/>
+                        attrs="{'invisible': [('state', 'in', ['closed', 'cancelled'])]}"/>
                     <button name="reopen_ticket" type="object" string="Reopen"
                         attrs="{'invisible': [('state', '!=', 'closed')]}"/>
-                    <button name="cancel_associated_sale_order" type="object" string="Cancel Associated Sale Order"
-                        attrs="{'invisible': [('state', 'in', ['closed', 'cancelled'])]}"/>
+                    <button name="cancel_associated_sale_order"
+                            string="Cancel Associated Sale Order"
+                            confirm="This order has posted invoices, are u sure you want to delete?"
+                            type="object"
+                            attrs="{'invisible': [('has_posted_invoices', '=', 0)]}"
+                            context="{'confirm_message': 'Test A'}"/>
+
+                    <button name="cancel_associated_sale_order"
+                            string="Cancel Associated Sale Order"
+                            confirm="Test B"
+                            type="object"
+                            attrs="{'invisible': [('has_posted_invoices', '>', 0)]}"
+                            context="{'confirm_message': 'Test B'}"/>
                 </header>
                 <sheet>
                     <group>
@@ -42,6 +53,7 @@
                         <field name="sale_order_id" />
                         <field name="invoice_count" readonly="1" />
                         <field name="shipment_count" readonly="1" />
+                        <field name="has_posted_invoices" readonly="1"/>
                     </group>
                     <notebook>
                         <page string="Messages">
@@ -113,4 +125,83 @@
             </form>
         </field>
     </record>
+
+    <record id="sale_order_view_form_inherit" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.complaint</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='order_lines']" position="after">
+                <page string="Complaints">
+                    <field name="complaint_ids">
+                        <tree>
+                            <field name="title"/>
+                            <field name="customer_id"/>
+                            <field name="user_id"/>
+                            <field name="creation_date"/>
+                            <field name="state"/>
+                        </tree>
+                        <form string="Complaint">
+                            <header>
+                                <field name="state" widget="statusbar" statusbar_visible="new,in_progress,closed,cancelled"/>
+                                <button name="close_ticket" type="object" string="Close"
+                                    attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
+                                <button name="cancel_ticket" type="object" string="Cancel"
+                                    attrs="{'invisible': [('state', 'in', ['closed', 'cancelled'])]}"/>
+                                <button name="reopen_ticket" type="object" string="Reopen"
+                                    attrs="{'invisible': [('state', '!=', 'closed')]}"/>
+                                <button name="cancel_associated_sale_order"
+                                        string="Cancel Associated Sale Order"
+                                        confirm="This order has posted invoices, are u sure you want to delete?"
+                                        type="object"
+                                        attrs="{'invisible': [('has_posted_invoices', '=', 0)]}"
+                                        context="{'confirm_message': 'Test A'}"/>
+            
+                                <button name="cancel_associated_sale_order"
+                                        string="Cancel Associated Sale Order"
+                                        confirm="Test B"
+                                        type="object"
+                                        attrs="{'invisible': [('has_posted_invoices', '>', 0)]}"
+                                        context="{'confirm_message': 'Test B'}"/>
+                            </header>
+                            <sheet>
+                                <group>
+                                    <field name="title" />
+                                    <field name="customer_id" />
+                                    <field name="user_id" />
+                                    <field name="creation_date" readonly="1" />
+                                    <field name="write_date" string="Modification Date" readonly="1" />
+                                    <field name="closing_date" />
+                                    <field name="initial_description" />
+                                    <field name="sale_order_id" />
+                                    <field name="invoice_count" readonly="1" />
+                                    <field name="shipment_count" readonly="1" />
+                                    <field name="has_posted_invoices" readonly="1"/>
+                                </group>
+                                <notebook>
+                                    <page string="Messages">
+                                        <field name="messages_ids" nolabel="1">
+                                            <tree delete="false" editable="false">
+                                                <field name="author_id" />
+                                                <field name="text" />
+                                                <field name="message_date" />
+                                            </tree>
+                                        </field>
+                                    </page>
+                                    <page string="Resolution">
+                                        <group>
+                                            <field name="resolution_description" />
+                                            <field name="closing_reason_id"
+                                                options="{'no_create': True, 'no_create_edit': True}" />
+                                        </group>
+                                    </page>
+                                </notebook>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

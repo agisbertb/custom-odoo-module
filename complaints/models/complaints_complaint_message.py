@@ -16,9 +16,5 @@ class ComplaintMessage(models.Model):
             new_record.complaint_id.state = 'in_progress'
         return new_record
 
-    @api.model
-    def create(self, vals):
-        return super(ComplaintMessage, self).create(vals)
-
     def write(self):
         raise exceptions.UserError("Sorry, messages cannot be modified.")
