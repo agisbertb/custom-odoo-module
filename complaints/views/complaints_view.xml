@@ -21,10 +21,14 @@
             <form string="Complaint">
                 <header>
                     <field name="state" widget="statusbar" statusbar_visible="new,in_progress,closed,cancelled"/>
-                    <button name="set_to_closed" type="object" string="Close"
-                        attrs="{'invisible': [('state', '!=', 'new'),('state','!=','in_progress')]}" />
-                    <button name="set_to_cancelled" type="object" string="Cancel"
-                        attrs="{'invisible': [('state', '=', 'closed')]}" />
+                    <button name="close_ticket" type="object" string="Close"
+                        attrs="{'invisible': [('state', '!=', 'in_progress')]}"/>
+                    <button name="cancel_ticket" type="object" string="Cancel"
+                        attrs="{'invisible': [('state', '=', 'closed')]}"/>
+                    <button name="reopen_ticket" type="object" string="Reopen"
+                        attrs="{'invisible': [('state', '!=', 'closed')]}"/>
+                    <button name="cancel_associated_sale_order" type="object" string="Cancel Associated Sale Order"
+                        attrs="{'invisible': [('state', 'in', ['closed', 'cancelled'])]}"/>
                 </header>
                 <sheet>
                     <group>

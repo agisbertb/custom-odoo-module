@@ -47,16 +47,56 @@ class Complaint(models.Model):
             else:
                 complaint.shipment_count = 0
 
-    def set_to_closed(self):
+    def close_ticket(self):
         for record in self:
-            if record.state in ['new', 'in_progress']:
+            if record.state == 'in_progress':
                 record.state = 'closed'
                 record.closing_date = fields.Datetime.now()
 
-    def set_to_cancelled(self):
+    def cancel_ticket(self):
         for record in self:
             if record.state in ['new', 'in_progress']:
                 record.state = 'cancelled'
+
+    def reopen_ticket(self):
+        for record in self:
+            if record.state == 'closed':
+                record.state = 'new'
+
+    def cancel_associated_sale_order(self):
+        for record in self:
+            if record.sale_order_id:
+                sale_order = record.sale_order_id
+                if sale_order.state != 'cancel':
+                    if sale_order.invoice_ids.filtered(lambda inv: inv.state == 'posted'):
+                        # Alertar l'usuari si hi ha factures publicades associades -> Verificar si compleix els requisits de la pràctica
+                        raise UserError(_('There are posted invoices associated with the sale order. Please cancel them first!'))
+                    else:
+                        # Cancel·lar la comanda de venda
+                        sale_order.action_cancel()
+                        # Enviar correu al client informant de la cancel·lació
+                        mail_template = self.env.ref('complaints.email_template_cancel_order')
+                        if mail_template:
+                            mail_template.send_mail(sale_order.id, force_send=True)
+
+                        # Registrar el correu a l'historial de la comanda
+                        mail_values = {
+                            'subject': _('Order Cancellation Notification'),
+                            'email_from': self.env.user.partner_id.email,
+                            'email_to': sale_order.partner_id.email,
+                            'body_html': _('The order %s has been cancelled.') % sale_order.name,
+                            'model': 'sale.order',
+                            'res_id': sale_order.id,
+                        }
+                        self.env['mail.mail'].create(mail_values)
+
+                        # Cancel·lar factures associades no publicades
+                        for invoice in sale_order.invoice_ids.filtered(lambda inv: inv.state != 'posted'):
+                            invoice.action_cancel()
+
+                        # Cancel·lar enviaments no fets
+                        for picking in sale_order.picking_ids.filtered(lambda pick: pick.state not in ['done', 'cancel']):
+                            picking.action_cancel()
 
     _sql_constraints = [
         ('unique_title', 'UNIQUE(title)', _('A complaint with this title already exists!')),

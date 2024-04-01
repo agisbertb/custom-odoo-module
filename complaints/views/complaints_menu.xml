@@ -3,6 +3,5 @@
 <odoo>
     <menuitem id="complaint_management_menu_root" name="Complaint Management" sequence="10"/>
     <menuitem id="complaint_management_main_menu" name="Complaints" parent="complaint_management_menu_root" action="action_complaint" sequence="10"/>
-    <menuitem id="complaint_management_closing_reason_menu" name="Closing Reasons"
-              parent="complaint_management_menu_root" action="action_complaint_closing_reason" sequence="20"/>
+    <menuitem id="complaint_management_closing_reason_menu" name="Closing Reasons" parent="complaint_management_menu_root" action="action_complaint_closing_reason" sequence="20"/>
 </odoo>

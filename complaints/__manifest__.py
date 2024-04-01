@@ -9,6 +9,7 @@
         "security/ir.model.access.csv",
         "views/complaints_view.xml",
         "views/complaints_menu.xml",
+        "views/email_template_cancel_order.xml",
 
     ],
     "images": ['static/description/icon.png'],
