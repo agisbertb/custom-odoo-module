@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 
 
 class Complaint(models.Model):
@@ -57,3 +57,9 @@ class Complaint(models.Model):
         for record in self:
             if record.state in ['new', 'in_progress']:
                 record.state = 'cancelled'
+
+    _sql_constraints = [
+        ('unique_title', 'UNIQUE(title)', _('A complaint with this title already exists!')),
+        ('unique_customer_complaint', 'UNIQUE(customer_id)', _('A customer can only be associated with one complaint at a time!')),
+        ('unique_sale_order_complaint', 'UNIQUE(sale_order_id)', _('A sale order can only be associated with one complaint at a time!')),
+    ]
