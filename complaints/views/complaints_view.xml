@@ -49,8 +49,8 @@
                         <field name="sale_order_id" />
                         <field name="invoice_count" readonly="1" />
                         <field name="shipment_count" readonly="1" />
-                        <field name="has_posted_invoices" readonly="1"/>
-                        <field name="has_linked_sale_order" readonly="1"/>
+                        <field name="has_posted_invoices" readonly="1" invisible="1"/>
+                        <field name="has_linked_sale_order" readonly="1" invisible="1"/>
                     </group>
                     <notebook>
                         <page string="Messages">
@@ -169,8 +169,8 @@
                                     <field name="sale_order_id" />
                                     <field name="invoice_count" readonly="1" />
                                     <field name="shipment_count" readonly="1" />
-                                    <field name="has_posted_invoices" readonly="1"/>
-                                    <field name="has_linked_sale_order" readonly="1"/>
+                                    <field name="has_posted_invoices" readonly="1" invisible="1"/>
+                                    <field name="has_linked_sale_order" readonly="1" invisible="1"/>
                                 </group>
                                 <notebook>
                                     <page string="Messages">

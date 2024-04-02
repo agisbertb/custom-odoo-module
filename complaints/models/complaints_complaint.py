@@ -139,7 +139,5 @@ class Complaint(models.Model):
             
     _sql_constraints = [
         ('unique_title', 'UNIQUE(title)', _('A complaint with this title already exists!')),
-        ('unique_customer_complaint', 'UNIQUE(customer_id)', _('A customer can only be associated with one complaint at a time!')),
-        ('unique_sale_order_complaint', 'UNIQUE(sale_order_id)', _('A sale order can only be associated with one complaint at a time!')),
         ('unique_open_complaint', 'CHECK((state != \'in_progress\' OR state IS NULL) OR (state = \'in_progress\' AND (SELECT COUNT(*) FROM complaint_complaint WHERE sale_order_id = complaint_complaint.sale_order_id AND state = \'in_progress\') = 1))', _('There can only be one open complaint associated with the same sale order at a time!'))
     ]
